@@ -12,7 +12,13 @@ global $wp_version;
 if((float)$wp_version >= 2.8){
 class PostDraftWidget extends WP_Widget {
 
+  var $plugin_path;
+  var $typ; // post type
+  var $state; // draft, pending, scheduled
+  var $amount; // integer
+
   function PostDraftWidget() {
+    // initialize the widget
     parent::WP_Widget(
       'PostDraftWidget'
       , 'Post Draft Widget'
@@ -20,10 +26,22 @@ class PostDraftWidget extends WP_Widget {
         'description' => 'Display your upcoming and drafted posts.'
       )
     );
+
+    // set the variable of the theme path
+    $this->plugin_path = plugin_dir_path('index.php');
   }
 
   function form($instance){
-    require_once('widget-form.php');
+    $defaults = array();
+    $defaults['title'] = 'Upcoming Posts';
+    $instance = wp_parse_args( (array) $instance, $defaults );
+    $title = ! empty( $instance['title'] ) ? $instance['title'] : __( 'New title', 'text_domain' );
+    ?>
+    <p>
+    <label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label>
+    <input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>">
+    </p>
+    <?php
   }
 
   function widget($args, $instance){
@@ -32,9 +50,16 @@ class PostDraftWidget extends WP_Widget {
   }
 
   function update($new_instance, $old_instance){
+    $instance = array();
     $instance = $old_instance;
-    return $instance;
+    $instance['title'] = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
+    return $new_instance;
   }
+
+  function get_posts($type, $amount){
+
+  }
+
 }
 }
 

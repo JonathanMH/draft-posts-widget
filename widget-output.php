@@ -1,6 +1,13 @@
-<aside class="widget widget-drafts">
-  <h2 class="widget-title">Upcoming</h2>
 <?php
+echo $before_widget;
+
+if(isset($instance['title'])){
+  echo $before_title;
+  echo $instance['title'];
+  echo $after_title;
+}
+
+
 // Beiträge mit Status "ausstehender Review" ausgeben
 // pending = "ausstehender Review"
 // future = "geplant"
@@ -19,5 +26,5 @@ if($future_posts = get_future_posts(5))
 {
     echo $future_posts;
 }
+echo $after_widget;
 ?>
-</aside>
